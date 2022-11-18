@@ -1,0 +1,38 @@
+---
+const features = [
+  {
+    title: "Learn from home",
+    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a urna sagittis, accumsan mauris vel.",
+    icon: "/features/home.svg",
+  },
+  {
+    title: "Get creative",
+    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a urna sagittis, accumsan mauris vel.",
+    icon: "/features/creative.svg",
+  },
+  {
+    title: "Open ideas",
+    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a urna sagittis, accumsan mauris vel.",
+    icon: "/features/idea.svg",
+  },
+];
+---
+
+<section>
+  <div class="container mx-auto px-5 py-16 max-w-7xl">
+    <h2 class="text-4xl xl:text-5xl font-black text-center lg:text-left">
+      Features
+    </h2>
+    <div class="grid lg:grid-cols-3 mt-12 lg:mt-20 gap-8 justify-center">
+      {
+        features.map((feature) => (
+          <div class=" space-y-2 bg-violet-900/30 rounded-lg p-8 max-w-2xl">
+            <img src={feature.icon} alt={feature.desc} class="h-10" />
+            <h3 class="text-2xl font-bold">{feature.title}</h3>
+            <p class="text-neutral-300">{feature.desc}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

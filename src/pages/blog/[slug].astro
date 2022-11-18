@@ -1,0 +1,92 @@
+---
+import { contentfulClient } from "../../lib/contentful";
+import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
+import type { BlogPost } from "../../lib/contentful";
+import Layout from "../../layouts/Layout.astro";
+import BlogCard from "../../components/BlogCard.astro";
+import Banner from "../../components/Banner.astro";
+
+const banner = {
+  title: "Want to get rockin'?",
+  desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  bgColor: "bg-violet-900",
+  textColor: "text-white",
+  buttonText: "Contact us",
+  buttonLink: "/contact",
+  buttonPriColor: "bg-black",
+  buttonSecColor: "bg-violet-400",
+};
+
+export async function getStaticPaths() {
+  const entries = await contentfulClient.getEntries<BlogPost>({
+    content_type: "blogPost",
+    order: "-sys.createdAt",
+  });
+
+  const pages = entries.items.map((item) => ({
+    params: { slug: item.fields.slug },
+    props: {
+      title: item.fields?.title,
+      content: documentToHtmlString(item?.fields?.content),
+      date: new Date(item?.fields.date).toDateString(),
+      excerpt: item.fields?.excerpt,
+      slug: item.fields?.slug,
+      image: item.fields?.image?.fields?.file?.url,
+    },
+  }));
+  return pages;
+}
+
+const { content, title, date, excerpt, slug, image } = Astro.props;
+
+const formatDate = (string) => {
+  const date = new Date(string);
+  const toDateString = date.toDateString();
+  return toDateString.substring(4);
+};
+
+const morePosts = await contentfulClient.getEntries<BlogPost>({
+  content_type: "blogPost",
+  order: "-sys.createdAt",
+  limit: 3,
+});
+
+const recentPostsOtherThanCurrent = morePosts.items
+  .filter((a) => a.fields.title !== title)
+  .slice(0, 2);
+---
+
+<Layout title={title}>
+  <div class="container mx-auto px-5 max-w-7xl py-16">
+    <article
+      class="flex flex-col items-start prose prose-invert mx-auto max-w-2xl lg:max-w-3xl"
+    >
+      <h1 class="text-4xl xl:text-5xl font-black mt-2">{title}</h1>
+
+      <span class="uppercase text-neutral-400 text-sm">
+        {formatDate(date)}
+      </span>
+
+      <img
+        src={image}
+        alt=""
+        class="max-w-2xl lg:max-w-3xl my-4 w-full rounded-lg"
+      />
+
+      <div class="mt-2" set:html={content} />
+    </article>
+    <aside class="w-full max-w-2xl lg:max-w-3xl mx-auto mt-16">
+      <h6 class="text-4xl font-bold lg:mt-0 mt-20">Also read</h6>
+      <div
+        class="flex flex-col md:flex-row gap-10 lg:gap-20 mx-auto justify-end mt-8"
+      >
+        {
+          recentPostsOtherThanCurrent.map((post) => (
+            <BlogCard {post} key={post.fields.title} excerpt="false" />
+          ))
+        }
+      </div>
+    </aside>
+  </div>
+  <Banner {banner} />
+</Layout>

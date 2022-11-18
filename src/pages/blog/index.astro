@@ -1,0 +1,37 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { contentfulClient } from "../../lib/contentful";
+
+import type { BlogPost } from "../../lib/contentful";
+import BlogCard from "../../components/BlogCard.astro";
+
+const blogPosts = await contentfulClient.getEntries<BlogPost>({
+  content_type: "blogPost",
+  order: "-sys.createdAt",
+});
+---
+
+<Layout title="Blog">
+  <section>
+    <div class="container mx-auto px-5 py-16 lg:py-28 max-w-7xl">
+      <div class="lg:w-1/2">
+        <h1 class="text-4xl xl:text-5xl font-black text-center lg:text-left">
+          Blog
+        </h1>
+        <!-- <p class="mt-4">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut
+          vestibulum.
+        </p> -->
+      </div>
+      <div
+        class="grid md:grid-cols-2 xl:grid-cols-3 gap-10 lg:gap-20 mt-12 lg:mt-20"
+      >
+        {
+          blogPosts.items.map((post) => (
+            <BlogCard key={post.fields.title} {post} />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>

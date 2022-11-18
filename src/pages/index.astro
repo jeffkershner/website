@@ -1,0 +1,27 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../sections/Hero.astro";
+import Features from "../sections/Features.astro";
+import Blog from "../sections/Blog.astro";
+import FAQs from "../sections/FAQs.astro";
+import Banner from "../components/Banner.astro";
+
+const banner = {
+  title: "Want to get rockin'?",
+  desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  bgColor: "bg-violet-900",
+  textColor: "text-white",
+  buttonText: "Contact us",
+  buttonLink: "/contact",
+  buttonPriColor: "bg-black",
+  buttonSecColor: "bg-violet-400",
+};
+---
+
+<Layout title="Home">
+  <Hero />
+  <Features />
+  <Blog />
+  <FAQs />
+  <Banner {banner} />
+</Layout>
